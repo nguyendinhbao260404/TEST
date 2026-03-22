@@ -19,34 +19,32 @@ end alu_4bit;
 
 architecture Behavioral of alu_4bit is
     signal result_temp : UNSIGNED(4 downto 0);
-    signal and_result  : STD_LOGIC_VECTOR(3 downto 0);
-    signal or_result   : STD_LOGIC_VECTOR(3 downto 0);
-    signal xor_result  : STD_LOGIC_VECTOR(3 downto 0);
+    signal A_unsigned  : UNSIGNED(3 downto 0);
+    signal B_unsigned  : UNSIGNED(3 downto 0);
 begin
-    -- Các phép logic
-    and_result <= A and B;
-    or_result  <= A or B;
-    xor_result <= A xor B;
+    -- Chuyển đổi sang UNSIGNED
+    A_unsigned <= UNSIGNED(A);
+    B_unsigned <= UNSIGNED(B);
     
-    process(A, B, ALU_Sel)
+    process(A_unsigned, B_unsigned, ALU_Sel)
     begin
         case ALU_Sel is
             when "000" =>  -- AND
-                result_temp <= ("0" & and_result);
+                result_temp <= ('0' & (A_unsigned and B_unsigned));
             when "001" =>  -- OR
-                result_temp <= ("0" & or_result);
+                result_temp <= ('0' & (A_unsigned or B_unsigned));
             when "010" =>  -- XOR
-                result_temp <= ("0" & xor_result);
+                result_temp <= ('0' & (A_unsigned xor B_unsigned));
             when "011" =>  -- ADD
-                result_temp <= ("0" & A) + ("0" & B);
+                result_temp <= ('0' & A_unsigned) + ('0' & B_unsigned);
             when "100" =>  -- SUB (A - B)
-                result_temp <= ("0" & A) - ("0" & B);
+                result_temp <= ('0' & A_unsigned) - ('0' & B_unsigned);
             when "101" =>  -- NOT A
-                result_temp <= ("0" & not A);
+                result_temp <= ('0' & (not A_unsigned));
             when "110" =>  -- A + 1
-                result_temp <= ("0" & A) + 1;
+                result_temp <= ('0' & A_unsigned) + 1;
             when "111" =>  -- A - 1
-                result_temp <= ("0" & A) - 1;
+                result_temp <= ('0' & A_unsigned) - 1;
             when others =>
                 result_temp <= (others => '0');
         end case;
